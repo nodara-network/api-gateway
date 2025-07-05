@@ -2,10 +2,6 @@
 
 > **Decentralized Mobile Infrastructure Protocol** - Rent verifiable functions from smartphones worldwide and pay per use in SOL/SPL tokens.
 
-[![GitHub](https://img.shields.io/badge/GitHub-nodara--network-blue?style=flat-square&logo=github)](https://github.com/nodara-network/)
-[![Website](https://img.shields.io/badge/Website-nodara.network-green?style=flat-square&logo=world)](https://nodara.network)
-[![Solana](https://img.shields.io/badge/Built%20on-Solana-purple?style=flat-square&logo=solana)](https://solana.com)
-
 ## What is Nodara Network?
 
 Nodara Network is a **DePIN (Decentralized Physical Infrastructure)** protocol that transforms smartphones into a global network of verifiable microservices. Think of it as **AWS Lambda powered by smartphones** - developers can request location proofs, sensor data, connectivity tests, and other services from nearby phones, paying only for successful execution.
