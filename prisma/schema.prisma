@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Device {
+  id              String    @id @default(uuid())
+  walletAddress   String
+  publicKey       String    @unique
+  os              String
+  model           String?
+  locationLat     Float?
+  locationLon     Float?
+  reputationScore Float     @default(50)
+  registeredAt    DateTime  @default(now())
+  lastSeenAt      DateTime?
+
+  taskResponses    TaskResponse[]
+  deviceStakes     DeviceStake[]
+  reputationEvents ReputationEvent[]
+}
+
+model Task {
+  id             String     @id @default(uuid())
+  onchainId      String     @unique // PDA or Solana hash
+  creatorWallet  String
+  url            String
+  rewardLamports BigInt
+  maxResponses   Int
+  status         TaskStatus
+  createdAt      DateTime   @default(now())
+  expiresAt      DateTime?
+
+  responses TaskResponse[]
+  consensus TaskConsensus?
+  walletTxs WalletTransaction[]
+}
+
+model TaskResponse {
+  id             String   @id @default(uuid())
+  task           Task     @relation(fields: [taskId], references: [id])
+  taskId         String
+  device         Device   @relation(fields: [deviceId], references: [id])
+  deviceId       String
+  statusCode     Int
+  responseTimeMs Int
+  isValid        Boolean  @default(true)
+  submittedAt    DateTime @default(now())
+  signature      String
+}
+
+model DeviceStake {
+  id          String      @id @default(uuid())
+  device      Device      @relation(fields: [deviceId], references: [id])
+  deviceId    String
+  stakeAmount BigInt
+  stakedAt    DateTime    @default(now())
+  unstakedAt  DateTime?
+  status      StakeStatus
+}
+
+model ReputationEvent {
+  id        String   @id @default(uuid())
+  device    Device   @relation(fields: [deviceId], references: [id])
+  deviceId  String
+  delta     Float
+  reason    String
+  createdAt DateTime @default(now())
+}
+
+model TaskConsensus {
+  id                String   @id @default(uuid())
+  task              Task     @relation(fields: [taskId], references: [id])
+  taskId            String   @unique
+  finalStatusCode   Int
+  avgResponseTimeMs Int
+  confidenceScore   Float
+  completedAt       DateTime
+}
+
+model WalletTransaction {
+  id             String         @id @default(uuid())
+  txSignature    String         @unique
+  type           WalletTxType
+  fromWallet     String
+  toWallet       String
+  amountLamports BigInt
+  relatedTask    Task?          @relation(fields: [relatedTaskId], references: [id])
+  relatedTaskId  String?
+  status         WalletTxStatus
+  confirmedAt    DateTime?
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  actor     String
+  action    String
+  target    String
+  metadata  Json
+  createdAt DateTime @default(now())
+}
+
+enum TaskStatus {
+  pending
+  active
+  complete
+  cancelled
+}
+
+enum StakeStatus {
+  staked
+  unstaking
+  unstaked
+}
+
+enum WalletTxType {
+  escrow
+  reward
+  refund
+}
+
+enum WalletTxStatus {
+  pending
+  confirmed
+  failed
+}
