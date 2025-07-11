@@ -110,6 +110,7 @@ enum TaskStatus {
   active
   complete
   cancelled
+  failed
 }
 
 enum StakeStatus {
