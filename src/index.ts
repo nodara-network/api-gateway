@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import cron from 'node-cron';
 import swaggerUi from 'swagger-ui-express';
 import { redis } from './cache/redis';
-import { PrismaClient } from "./generated/prisma";
+import { PrismaClient } from "@prisma/client";
 import { swaggerSpec } from "./lib/swagger";
 import healthRouter from "./routes/health";
 import uptimeRouter from './routes/uptime';
