@@ -9,7 +9,7 @@ import { PrismaClient } from "@prisma/client";
 import { swaggerSpec } from "./lib/swagger";
 import healthRouter from "./routes/health";
 import uptimeRouter from './routes/uptime';
-
+import webhookRouter from './routes/webhook';
 export const prismaClient = new PrismaClient();
 
 const app = express();
@@ -23,7 +23,7 @@ app.use(cors());
 app.use('/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/v1/health', healthRouter);
 app.use("/v1/uptime", uptimeRouter);
-
+app.use("/v1", webhookRouter);
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
