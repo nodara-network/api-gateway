@@ -129,3 +129,53 @@ enum WalletTxStatus {
   confirmed
   failed
 }
+
+
+
+----------Priyanshu code ------below
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id          String      @id   @default(uuid())
+  username    String      @unique
+  password    String
+  websites    website[]
+} 
+
+model website {
+  id            String  @id    @default(uuid()) 
+  url           String
+  user_id       String
+  time_added    DateTime
+  ticks         website_tick[]
+  user          user    @relation(fields: [user_id], references: [id])
+}
+
+model website_tick {
+  id                String  @id     @default(uuid())
+  response_time_ms  Int
+  status            website_status
+  website           website     @relation(fields: [website_id], references: [id])     
+  website_id        String
+  createdAt         DateTime    @default(now())
+}
+
+enum website_status {
+  Up
+  Down
+  Unknown
+}
